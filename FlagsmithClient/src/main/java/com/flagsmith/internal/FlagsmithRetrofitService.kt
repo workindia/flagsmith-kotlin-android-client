@@ -44,7 +44,8 @@ interface FlagsmithRetrofitService {
             readTimeoutSeconds: Long,
             writeTimeoutSeconds: Long,
             timeTracker: FlagsmithEventTimeTracker,
-            klass: Class<T>
+            interceptorList: List<Interceptor>,
+            klass: Class<T>,
         ): Pair<FlagsmithRetrofitService, Cache?> {
             fun cacheControlInterceptor(): Interceptor {
                 return Interceptor { chain ->
@@ -89,6 +90,7 @@ interface FlagsmithRetrofitService {
                 .addInterceptor(envKeyInterceptor(environmentKey))
                 .addInterceptor(updatedAtInterceptor(timeTracker))
                 .addInterceptor(jsonContentTypeInterceptor())
+                .apply { interceptorList.forEach { interceptor -> addInterceptor(interceptor) } }
                 .let { if (cacheConfig.enableCache) it.addNetworkInterceptor(cacheControlInterceptor()) else it }
                 .callTimeout(requestTimeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(readTimeoutSeconds, java.util.concurrent.TimeUnit.SECONDS)

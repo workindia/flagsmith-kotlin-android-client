@@ -14,6 +14,7 @@ import com.flagsmith.internal.FlagsmithRetrofitService
 import com.flagsmith.internal.enqueueWithResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.Cache
+import okhttp3.Interceptor
 
 /**
  * Flagsmith
@@ -40,6 +41,7 @@ class Flagsmith constructor(
     private val requestTimeoutSeconds: Long = 4L,
     private val readTimeoutSeconds: Long = 6L,
     private val writeTimeoutSeconds: Long = 6L,
+    private val interceptorList: List<Interceptor> = emptyList(),
     override var lastFlagFetchTime: Double = 0.0 // from FlagsmithEventTimeTracker
 ) : FlagsmithEventTimeTracker {
     private lateinit var retrofit: FlagsmithRetrofitService
@@ -90,7 +92,7 @@ class Flagsmith constructor(
         val pair = FlagsmithRetrofitService.create<FlagsmithRetrofitService>(
             baseUrl = baseUrl, environmentKey = environmentKey, context = context, cacheConfig = cacheConfig,
             requestTimeoutSeconds = requestTimeoutSeconds, readTimeoutSeconds = readTimeoutSeconds,
-            writeTimeoutSeconds = writeTimeoutSeconds, timeTracker = this, klass = FlagsmithRetrofitService::class.java)
+            writeTimeoutSeconds = writeTimeoutSeconds, timeTracker = this, interceptorList = interceptorList, klass = FlagsmithRetrofitService::class.java)
         retrofit = pair.first
         cache = pair.second
     }
