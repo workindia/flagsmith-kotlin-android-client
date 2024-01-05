@@ -49,7 +49,8 @@ interface FlagsmithRetrofitServiceTest: FlagsmithRetrofitService {
                 readTimeoutSeconds = readTimeoutSeconds,
                 writeTimeoutSeconds = writeTimeoutSeconds,
                 timeTracker = timeTracker,
-                klass = klass
+                klass = klass,
+                interceptorList = interceptorList
             ) as Pair<FlagsmithRetrofitServiceTest, Cache?>
         }
     }
